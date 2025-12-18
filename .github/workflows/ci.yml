@@ -30,6 +30,8 @@ jobs:
           files: ./coverage.out
           flags: unittests
           name: codecov-umbrella
+          token: ${{ secrets.CODECOV_TOKEN }} 
+        
       
       - name: Run linter
         uses: golangci/golangci-lint-action@v9
