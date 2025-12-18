@@ -30,6 +30,7 @@ jobs:
           files: ./coverage.out
           flags: unittests
           name: codecov-umbrella
+          base: auto
       
       - name: Run linter
         uses: golangci/golangci-lint-action@v9
