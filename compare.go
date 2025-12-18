@@ -1,3 +1,6 @@
+// Package jsonassert provides flexible JSON comparison with support for custom matchers.
+// It enables test developers to assert JSON equality without hardcoding dynamic values
+// like UUIDs or timestamps.
 package jsonassert
 
 import (
@@ -109,7 +112,8 @@ func (r *matcherRegistry) compareValues(expected, actual any, path string) []str
 	if matchFunc, found := r.getMatcherFunc(expected); found {
 		tag, match := matchFunc(actual)
 		if !match {
-			errors = append(errors, fmt.Sprintf("Path '%s': value '%v' doesn't match '%s'", path, actual, tag))
+			errors = append(errors,
+				fmt.Sprintf("Path '%s': value '%v' doesn't match '%s'", path, actual, tag))
 		}
 		return errors
 	}
@@ -119,7 +123,8 @@ func (r *matcherRegistry) compareValues(expected, actual any, path string) []str
 	actualType := reflect.TypeOf(actual)
 
 	if expectedType != actualType {
-		errors = append(errors, fmt.Sprintf("Path '%s': expected type %v, actual %v", path, expectedType, actualType))
+		errors = append(errors,
+			fmt.Sprintf("Path '%s': expected type %v, actual %v", path, expectedType, actualType))
 		return errors
 	}
 
@@ -164,7 +169,8 @@ func (r *matcherRegistry) compareMap(expectedMap, actualMap map[string]any, path
 	for key := range actualMap {
 		if _, exists := expectedMap[key]; !exists {
 			currentPath := path + "." + key
-			errors = append(errors, fmt.Sprintf("Path '%s': unexpected in actual JSON", currentPath))
+			errors = append(errors,
+				fmt.Sprintf("Path '%s': unexpected in actual JSON", currentPath))
 		}
 	}
 
@@ -215,7 +221,8 @@ func (r *matcherRegistry) compageSlice(expectedSlice, actualSlice []any, path st
 
 		if !found {
 			errors = append(errors, bestErrors...)
-			errors = append(errors, fmt.Sprintf("Path '%s[%d]': not found in actual array", path, i))
+			errors = append(errors,
+				fmt.Sprintf("Path '%s[%d]': not found in actual array", path, i))
 		}
 	}
 

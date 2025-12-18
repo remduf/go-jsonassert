@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"go-jsonassert"
-
+	"github.com/go-jsonassert"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,11 +14,10 @@ const (
 	jsonShouldNotMatch          = "JSON should not match"
 	errofShouldHaveBeenCalled   = "ErrorF should have been called"
 	failNowShouldHaveBeenCalled = "FailNow should have been called"
-	invalidJsonError            = "unexpected end of JSON input"
+	invalidJSONError            = "unexpected end of JSON input"
 )
 
 func TestMatchJSON(t *testing.T) {
-
 	testsCases := []struct {
 		name     string
 		actual   string
@@ -65,7 +63,7 @@ func TestMatchJSON(t *testing.T) {
 }
 
 func TestMatchJSON_WithCustomMatcher(t *testing.T) {
-	var EmailMatcher = jsonassert.NewMatcher("AnyEmail", func(value any, param *string) bool {
+	emailMatcher := jsonassert.NewMatcher("AnyEmail", func(value any, _ *string) bool {
 		str, ok := value.(string)
 		if !ok {
 			return false
@@ -92,7 +90,7 @@ func TestMatchJSON_WithCustomMatcher(t *testing.T) {
 			"email": "user@example.com"
 		}`
 
-		jsonassert.MatchJSON(t, expected, actual, EmailMatcher)
+		jsonassert.MatchJSON(t, expected, actual, emailMatcher)
 	})
 
 	t.Run("CustomMatcher not match", func(t *testing.T) {
@@ -105,18 +103,16 @@ func TestMatchJSON_WithCustomMatcher(t *testing.T) {
 			"email": "user"
 		}`
 
-		jsonassert.MatchJSON(mockT, expected, actual, EmailMatcher)
+		jsonassert.MatchJSON(mockT, expected, actual, emailMatcher)
 
 		assert.Equal(t, true, mockT.errorCalled, errofShouldHaveBeenCalled)
 
 		assert.Contains(t, mockT.errorFormat, jsonDoesNotMatch)
 	})
-
 }
 
 func TestMatchJSON_WithRegexMatcher(t *testing.T) {
-	postalCodeMatcher :=
-		jsonassert.NewMustRegexMatcher(`^[A-Z]\d[A-Z] \d[A-Z]\d$`, "PostalCode")
+	postalCodeMatcher := jsonassert.NewMustRegexMatcher(`^[A-Z]\d[A-Z] \d[A-Z]\d$`, "PostalCode")
 
 	expected := `{
 		"address": {
@@ -138,7 +134,6 @@ func TestMatchJSON_WithRegexMatcher(t *testing.T) {
 }
 
 func TestMatchJSON_WithStringContainMatcher(t *testing.T) {
-
 	expected := `{
 		"title": "<StringContain('Senior')>"
 	}`
@@ -153,7 +148,6 @@ func TestMatchJSON_WithStringContainMatcher(t *testing.T) {
 }
 
 func TestMatchJSON_WithStringMatchMatcher(t *testing.T) {
-
 	expected := `{
 		"message": "<StringMatch(consentValidFor(.*)is missing)>"
 	}`
@@ -313,7 +307,6 @@ func TestMatchJSON_WithAnyObject(t *testing.T) {
 
 		assert.Equal(t, true, mockT.errorCalled, errofShouldHaveBeenCalled)
 	})
-
 }
 
 func TestMatchJSON_WithAnyArray(t *testing.T) {
@@ -387,7 +380,6 @@ func TestMatchJSON_WithAnyBool(t *testing.T) {
 			t.Fatal("AnyBool should not accept string")
 		}
 	})
-
 }
 
 func TestMatchJSON_CombiningMultipleMatchers(t *testing.T) {
@@ -420,7 +412,6 @@ func TestMatchJSON_CombiningMultipleMatchers(t *testing.T) {
 }
 
 func TestMatchJSON_NoMatch(t *testing.T) {
-
 	t.Run("NoMatch", func(t *testing.T) {
 		mockT := &mockTesting{}
 		expected := `{
@@ -465,7 +456,7 @@ func TestMatchJSON_NoMatch(t *testing.T) {
 		jsonassert.MatchJSON(mockT, expected, actual)
 
 		assert.Equal(t, true, mockT.errorCalled, errofShouldHaveBeenCalled)
-		assert.Equal(t, invalidJsonError, mockT.errorFormat)
+		assert.Equal(t, invalidJSONError, mockT.errorFormat)
 	})
 
 	t.Run("Invalid expected nested JSON", func(t *testing.T) {
@@ -507,7 +498,7 @@ func TestMatchJSON_NoMatch(t *testing.T) {
 		jsonassert.MatchJSON(mockT, expected, actual)
 
 		assert.Equal(t, true, mockT.errorCalled, errofShouldHaveBeenCalled)
-		assert.Equal(t, invalidJsonError, mockT.errorFormat)
+		assert.Equal(t, invalidJSONError, mockT.errorFormat)
 	})
 
 	t.Run("AssertJSON", func(t *testing.T) {
@@ -523,9 +514,8 @@ func TestMatchJSON_NoMatch(t *testing.T) {
 
 		assert.Equal(t, true, mockT.errorCalled, errofShouldHaveBeenCalled)
 		assert.Equal(t, true, mockT.failCalled, failNowShouldHaveBeenCalled)
-		assert.Equal(t, invalidJsonError, mockT.errorFormat)
+		assert.Equal(t, invalidJSONError, mockT.errorFormat)
 	})
-
 }
 
 type mockTesting struct {
@@ -541,6 +531,7 @@ func (m *mockTesting) Errorf(format string, args ...any) {
 
 	m.errorMsg = fmt.Sprintf(format, args...)
 }
+
 func (m *mockTesting) FailNow() {
 	m.failCalled = true
 }

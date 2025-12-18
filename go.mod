@@ -1,4 +1,4 @@
-module go-jsonassert
+module github.com/go-jsonassert
 
 go 1.24.2
 
