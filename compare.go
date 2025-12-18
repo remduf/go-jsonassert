@@ -134,7 +134,7 @@ func (r *matcherRegistry) compareValues(expected, actual any, path string) []str
 		errors = append(errors, errs...)
 
 	case []any:
-		errs := r.compageSlice(expectedVal, actual.([]any), path)
+		errs := r.compareSlice(expectedVal, actual.([]any), path)
 		errors = append(errors, errs...)
 
 	default:
@@ -177,7 +177,7 @@ func (r *matcherRegistry) compareMap(expectedMap, actualMap map[string]any, path
 	return errors
 }
 
-func (r *matcherRegistry) compageSlice(expectedSlice, actualSlice []any, path string) []string {
+func (r *matcherRegistry) compareSlice(expectedSlice, actualSlice []any, path string) []string {
 	var errors []string
 
 	if len(expectedSlice) != len(actualSlice) {
